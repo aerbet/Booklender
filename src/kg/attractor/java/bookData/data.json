@@ -1,0 +1,31 @@
+{
+  "booklender": {
+    "employees": [],
+    "books": [],
+    "lendingRecords": {}
+  },
+  "books": [
+    {
+      "id": 1,
+      "title": "",
+      "description": "",
+      "status": "На полке",
+      "issueDate": null,
+      "returnDate": null,
+      "image": "",
+      "author": ""
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "login": "",
+      "password": "",
+      "firstName": "",
+      "lastName": "",
+      "position": "",
+      "currentBooks": [],
+      "previousBooks": []
+    }
+  ]
+}
