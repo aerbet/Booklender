@@ -101,5 +101,10 @@ public class SampleDataModel {
         public void setEmail(String email) {
             this.email = email;
         }
+
+        @Override
+        public String toString() {
+            return String.format("firstName: %s, lastName: %s, email: %s", firstName, lastName, email);
+        }
     }
 }

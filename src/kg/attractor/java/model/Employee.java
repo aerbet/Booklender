@@ -11,6 +11,14 @@ public class Employee {
     private ArrayList<Book> currentBooks;
     private ArrayList<Book> previousBooks;
 
-    public Employee() {
+    public Employee(int id, String login, String password, String firstName, String lastName, String position, ArrayList<Book> currentBooks, ArrayList<Book> previousBooks) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.position = position;
+        this.currentBooks = new ArrayList<>(){};
+        this.previousBooks = previousBooks;
     }
 }
