@@ -9,7 +9,7 @@
       "id": 1,
       "title": "",
       "description": "",
-      "status": "На полке",
+      "status": "",
       "issueDate": null,
       "returnDate": null,
       "image": "",
@@ -23,9 +23,7 @@
       "password": "",
       "firstName": "",
       "lastName": "",
-      "position": "",
-      "currentBooks": [],
-      "previousBooks": []
+      "position": ""
     }
   ]
 }

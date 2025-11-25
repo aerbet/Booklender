@@ -32,18 +32,18 @@
 				<td><strong>${book.name}</strong></td>
 				<td>${book.author}</td>
 				<td>
-					<#if book.status == "Available" || book.status == "на полке">
+					<#if book.status == "Available">
 					<span class="badge available">Доступна</span>
 					<#else>
 					<span class="badge issued">Выдана</span>
 				</#if>
 				</td>
 				<td>
-					<#if book.status != "Available" && book.status != "на полке">
+					<#if book.status != "Available">
 					<#assign holder = findEmployeeByCurrentBook(book) />
 
 					<#if holder??>
-					<a href="/employee?id=${holder.id}">
+					<a href="/books">
 						${holder.firstName} ${holder.lastName}
 					</a>
 					<#else>
@@ -93,7 +93,7 @@
 			</td>
 
 			<td>
-				<a href="/employee?id=${employee.id}" class="btn">Открыть</a>
+				<a href="/books" class="btn">Открыть</a>
 			</td>
 			</tr>
 		</#list>

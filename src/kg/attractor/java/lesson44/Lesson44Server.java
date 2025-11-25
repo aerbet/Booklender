@@ -5,11 +5,14 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import kg.attractor.java.model.Book;
 import kg.attractor.java.model.Booklender;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
@@ -32,7 +35,25 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void freemarkerBookHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "book.html", getBooklender());
+        try {
+            String query = exchange.getRequestURI().getQuery();
+            int bookId = -1;
+
+            if (query != null && query.startsWith("id=")) {
+                bookId = Integer.parseInt(query.substring(3));
+            }
+
+            Booklender lender = getBooklender();
+            Book book = lender.findBookById(bookId);
+
+            Map<String, Object> model = new HashMap<>();
+            model.put("book", book);
+            model.put("lender", lender);
+
+            renderTemplate(exchange, "book.html", model);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     private void freemarkerBooksHandler(HttpExchange exchange) {

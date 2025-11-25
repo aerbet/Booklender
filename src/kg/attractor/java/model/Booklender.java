@@ -15,9 +15,9 @@ public class Booklender {
     }
 
     private void initData() {
-        Book book1 = new Book(1, "Harry Potter", "Magic world", "Available", "J.K. Rowling", LocalDateTime.now(), LocalDateTime.now(), "https://placehold.co/300x450?text=Harry+Potter");
-        Book book2 = new Book(2, "Lord of the Rings", "Epic fantasy", "Выдана", "J.R.R. Tolkien", LocalDateTime.now(), LocalDateTime.now(), "https://placehold.co/300x450?text=LOTR");
-        Book book3 = new Book(3, "Java for Beginners", "Coding", "Available", "Herbert Schildt", LocalDateTime.now(), LocalDateTime.now(), "https://placehold.co/300x450?text=Java");
+        Book book1 = new Book(1, "Harry Potter", "Magic world", "Available", "J.K. Rowling", LocalDateTime.now(), LocalDateTime.now(), "https://cdn.waterstones.com/bookjackets/large/9781/4088/9781408855652.jpg");
+        Book book2 = new Book(2, "Lord of the Rings", "Epic fantasy", "Выдана", "J.R.R. Tolkien", LocalDateTime.now(), LocalDateTime.now(), "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ97pFcvAFG220EJKoo5_niRpgkTooVLyDz-g&s");
+        Book book3 = new Book(3, "Java for Beginners", "Coding", "Available", "Herbert Schildt", LocalDateTime.now(), LocalDateTime.now(), "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg");
         booksList.add(book1);
         booksList.add(book2);
         booksList.add(book3);
@@ -42,6 +42,15 @@ public class Booklender {
 
             if (empRecords.getCurrentBooks().contains(targetBook)) {
                 return employee;
+            }
+        }
+        return null;
+    }
+
+    public Book findBookById(int id) {
+        for (Book book : booksList) {
+            if (book.getId() == id) {
+                return book;
             }
         }
         return null;
