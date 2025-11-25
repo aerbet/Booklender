@@ -13,7 +13,6 @@
 <div class="container">
 	<div class="card">
 		<h1>Библиотека</h1>
-		<p>Ниже представлен список всех книг и их текущий статус.</p>
 
 		<table class="book-table">
 			<thead>
@@ -22,11 +21,12 @@
 				<th>Название</th>
 				<th>Автор</th>
 				<th>Статус</th>
+				<th>Сотрудник</th>
 				<th>Действие</th>
 			</tr>
 			</thead>
 			<tbody>
-			<#list lendingRecords as book>
+			<#list booksList as book>
 			<tr>
 				<td>${book.id}</td>
 				<td><strong>${book.name}</strong></td>
@@ -36,18 +36,70 @@
 					<span class="badge available">Доступна</span>
 					<#else>
 					<span class="badge issued">Выдана</span>
-					<br><small class="text-muted">(${book.status})</small>
 				</#if>
 				</td>
 				<td>
-					<a href="/book?id=${book.id}" class="btn">Подробнее</a>
-				</td>
+					<#if book.status != "Available" && book.status != "на полке">
+					<#assign holder = findEmployeeByCurrentBook(book) />
+
+					<#if holder??>
+					<a href="/employee?id=${holder.id}">
+						${holder.firstName} ${holder.lastName}
+					</a>
+					<#else>
+					<span style="color: gray;">(Неизвестен)</span>
+				</#if>
+			</#if>
+			</td>
+			<td>
+				<a href="/book?id=${book.id}" class="btn">Подробнее</a>
+			</td>
 			</tr>
 			</#list>
 			</tbody>
 		</table>
 	</div>
 </div>
+<div class="container">
+	<div class="card">
+		<h1>Список сотрудников</h1>
 
+		<table class="book-table">
+			<thead>
+			<tr>
+				<th>Сотрудник</th>
+				<th>Должность</th>
+				<th>Текущие книги</th>
+				<th>Прочитанные книги</th>
+				<th>Действия</th>
+			</tr>
+			</thead>
+			<tbody>
+			<#list records as employee, record>
+			<tr>
+				<td>${employee.firstName} ${employee.lastName}</td>
+				<td>${employee.position}</td>
+
+				<td>
+					<#list record.currentBooks![] as book>
+					• ${book.name} <#sep><br></#sep>
+			</#list>
+			</td>
+
+			<td>
+				<#list record.previousBooks![] as book>
+				✔ ${book.name} <#sep><br></#sep>
+			</#list>
+			</td>
+
+			<td>
+				<a href="/employee?id=${employee.id}" class="btn">Открыть</a>
+			</td>
+			</tr>
+		</#list>
+		</tbody>
+		</table>
+	</div>
+</div>
 </body>
 </html>
