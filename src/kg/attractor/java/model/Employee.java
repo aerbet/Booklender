@@ -1,5 +1,6 @@
 package kg.attractor.java.model;
-import java.util.ArrayList;
+
+import java.util.Objects;
 
 public class Employee {
     private int id;
@@ -8,8 +9,6 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String position;
-    private ArrayList<Book> currentBooks;
-    private ArrayList<Book> previousBooks;
 
     public Employee(int id, String login, String password, String firstName, String lastName, String position) {
         this.id = id;
@@ -18,8 +17,6 @@ public class Employee {
         this.firstName = firstName;
         this.lastName = lastName;
         this.position = position;
-        this.currentBooks = new ArrayList<>(){};
-        this.previousBooks = new ArrayList<>(){};
     }
 
     public int getId() {
@@ -70,19 +67,16 @@ public class Employee {
         this.position = position;
     }
 
-    public ArrayList<Book> getCurrentBooks() {
-        return currentBooks;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id && Objects.equals(login, employee.login);
     }
 
-    public void setCurrentBooks(ArrayList<Book> currentBooks) {
-        this.currentBooks = currentBooks;
-    }
-
-    public ArrayList<Book> getPreviousBooks() {
-        return previousBooks;
-    }
-
-    public void setPreviousBooks(ArrayList<Book> previousBooks) {
-        this.previousBooks = previousBooks;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, login);
     }
 }

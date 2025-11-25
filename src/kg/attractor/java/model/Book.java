@@ -1,5 +1,7 @@
 package kg.attractor.java.model;
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Book {
     private int id;
@@ -84,5 +86,18 @@ public class Book {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id && Objects.equals(name, book.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

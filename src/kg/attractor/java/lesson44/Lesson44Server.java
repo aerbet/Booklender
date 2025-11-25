@@ -9,12 +9,7 @@ import kg.attractor.java.model.Booklender;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
@@ -24,6 +19,16 @@ public class Lesson44Server extends BasicServer {
         registerGet("/sample", this::freemarkerSampleHandler);
         registerGet("/books", this::freemarkerBooksHandler);
         registerGet("/book", this::freemarkerBookHandler);
+        registerGet("/employees", this::freemarkerEmployeesHandler);
+        registerGet("/employee", this::freemarkerEmployeeHandler);
+    }
+
+    private void freemarkerEmployeeHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "employee.html", getBooklender());
+    }
+
+    private void freemarkerEmployeesHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "employees.html", getBooklender());
     }
 
     private void freemarkerBookHandler(HttpExchange exchange) {
