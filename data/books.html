@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+		  name="viewport">
+	<meta content="ie=edge" http-equiv="X-UA-Compatible">
+	<title>Библиотека - Список книг</title>
+	<link href="css/freemarker.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+	<div class="card">
+		<h1>Библиотека</h1>
+		<p>Ниже представлен список всех книг и их текущий статус.</p>
+
+		<table class="book-table">
+			<thead>
+			<tr>
+				<th>ID</th>
+				<th>Название</th>
+				<th>Автор</th>
+				<th>Статус</th>
+				<th>Действие</th>
+			</tr>
+			</thead>
+			<tbody>
+			<#list lendingRecords as book>
+			<tr>
+				<td>${book.id}</td>
+				<td><strong>${book.name}</strong></td>
+				<td>${book.author}</td>
+				<td>
+					<#if book.status == "Available" || book.status == "на полке">
+					<span class="badge available">Доступна</span>
+					<#else>
+					<span class="badge issued">Выдана</span>
+					<br><small class="text-muted">(${book.status})</small>
+				</#if>
+				</td>
+				<td>
+					<a href="/book?id=${book.id}" class="btn">Подробнее</a>
+				</td>
+			</tr>
+			</#list>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</body>
+</html>

@@ -11,13 +11,46 @@ public class Booklender {
     private List<Book> lendingRecords = new ArrayList<>();
 
     public Booklender() {
-        this.book = new Book(1, "Harry Potter", "Lor", "Available", "Erbol", LocalDateTime.now(), LocalDateTime.now(), "img.jpg");
+        this.employee = new Employee(1, "admin", "admin", "John", "Doe", "boss");
+        this.lendingRecords = new ArrayList<>();
+
+        this.lendingRecords.add(new Book(
+                1,
+                "Harry Potter",
+                "J.K. Rowling",
+                "Available",
+                "Fantasy",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                "img1.jpg"));
+        this.lendingRecords.add(new Book(
+                2,
+                "Lord of the Rings",
+                "J.R.R. Tolkien",
+                "Выдана admin",
+                "Fantasy",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                "img2.jpg"));
+        this.lendingRecords.add(new Book(
+                3,
+                "Java for Beginners",
+                "Herbert Schildt",
+                "Available",
+                "Education",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                "img3.jpg"));
+
+        this.book = this.lendingRecords.get(0);
     }
 
     public Book getBook() {
         return book;
     }
-    public void setBook(Book book) {}
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public Employee getEmployee() {
         return employee;

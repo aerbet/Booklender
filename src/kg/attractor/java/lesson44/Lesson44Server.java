@@ -22,11 +22,16 @@ public class Lesson44Server extends BasicServer {
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/sample", this::freemarkerSampleHandler);
-        registerGet("/book", this::getBooklender);
+        registerGet("/books", this::freemarkerBooksHandler);
+        registerGet("/book", this::freemarkerBookHandler);
     }
 
-    private void getBooklender(HttpExchange exchange) {
+    private void freemarkerBookHandler(HttpExchange exchange) {
         renderTemplate(exchange, "book.html", getBooklender());
+    }
+
+    private void freemarkerBooksHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "books.html", getBooklender());
     }
 
     private static Configuration initFreeMarker() {
