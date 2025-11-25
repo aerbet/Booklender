@@ -7,6 +7,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import kg.attractor.java.model.Book;
 import kg.attractor.java.model.Booklender;
+import kg.attractor.java.model.Employee;
+import kg.attractor.java.model.EmployeeRecords;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
@@ -27,7 +29,36 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void freemarkerEmployeeHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "employee.html", getBooklender());
+        try {
+            String query = exchange.getRequestURI().getQuery();
+            int employeeId = -1;
+            if (query != null && query.startsWith("id=")) {
+                employeeId = Integer.parseInt(query.substring(3));
+            }
+
+            Booklender lender = getBooklender();
+            Employee found = null;
+            EmployeeRecords empRecords = null;
+            for (Map.Entry<Employee, EmployeeRecords> entry : lender.getRecords().entrySet()) {
+                if (entry.getKey().getId() == employeeId) {
+                    found = entry.getKey();
+                    empRecords = entry.getValue();
+                    break;
+                }
+            }
+
+            if (found == null) {
+                return;
+            }
+
+            Map<String, Object> model = new HashMap<>();
+            model.put("employee", found);
+            model.put("records", empRecords);
+
+            renderTemplate(exchange, "employee.html", model);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     private void freemarkerEmployeesHandler(HttpExchange exchange) {
