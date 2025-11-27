@@ -22,6 +22,7 @@ public class Lesson44Server extends BasicServer {
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/sample", this::freemarkerSampleHandler);
+        registerGet("/register", this::freemarkerRegisterHandler);
         registerGet("/books", this::freemarkerBooksHandler);
         registerGet("/book", this::freemarkerBookHandler);
         registerGet("/employees", this::freemarkerEmployeesHandler);
@@ -110,6 +111,10 @@ public class Lesson44Server extends BasicServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void freemarkerRegisterHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "register.html", getSampleDataModel());
     }
 
     private void freemarkerSampleHandler(HttpExchange exchange) {
