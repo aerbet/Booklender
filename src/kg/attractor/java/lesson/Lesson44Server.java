@@ -1,4 +1,4 @@
-package kg.attractor.java.lesson44;
+package kg.attractor.java.lesson;
 
 import com.sun.net.httpserver.HttpExchange;
 import freemarker.template.Configuration;
@@ -12,9 +12,16 @@ import kg.attractor.java.model.EmployeeRecords;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
+import kg.attractor.java.server.Utils;
+
+import java.awt.*;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
@@ -22,11 +29,36 @@ public class Lesson44Server extends BasicServer {
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/sample", this::freemarkerSampleHandler);
+        registerGet("/login", this::loginHandler);
         registerGet("/register", this::freemarkerRegisterHandler);
         registerGet("/books", this::freemarkerBooksHandler);
         registerGet("/book", this::freemarkerBookHandler);
         registerGet("/employees", this::freemarkerEmployeesHandler);
         registerGet("/employee", this::freemarkerEmployeeHandler);
+
+        registerPost("/login", this::loginPostHandler);
+    }
+
+    private void loginPostHandler(HttpExchange exchange) {
+        String contentType = getContentType(exchange);
+        String raw = getRequestBody(exchange);
+        Map<String, String> parsed = Utils.parseUrlEncoded(raw, "&");
+
+        String fmt = "<p>Необработанные данные: <b>%s</b></p>"
+                + "<p>Content-type: <b>%s</b></p>"
+                + "<p>После обработки: <b>%s</b></p>";
+
+        String data = String.format(fmt, raw, contentType, parsed);
+
+        try {
+            sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, data.getBytes());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private void loginHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "login.html", getBooklender());
     }
 
     private void freemarkerEmployeeHandler(HttpExchange exchange) {
@@ -160,5 +192,25 @@ public class Lesson44Server extends BasicServer {
 
     private Booklender getBooklender() {
         return new Booklender();
+    }
+
+    protected static String getContentType(HttpExchange exchange) {
+        return exchange.getRequestHeaders()
+                .getOrDefault("Content-Type", List.of(""))
+                .getFirst();
+    }
+
+    protected static String getRequestBody(HttpExchange exchange) {
+        InputStream stream = exchange.getRequestBody();
+        Charset charset = StandardCharsets.UTF_8;
+        InputStreamReader isr = new InputStreamReader(stream, charset);
+
+        try (BufferedReader br = new BufferedReader(isr)) {
+            return br.lines().collect(Collectors.joining(""));
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return "";
     }
 }
