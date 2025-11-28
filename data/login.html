@@ -14,6 +14,11 @@
 			<div class="legend">
 				<p>Welcome!</p>
 			</div>
+			<#if error??>
+			<div style="color: red; padding: 10px; margin-bottom: 10px; border: 1px solid red; text-align: center">
+				${error}
+			</div>
+			</#if>
 			<div class="form-element">
 				<label for="user-email">email</label>
 				<input type="email" name="email" id="user-email" placeholder="your email" required autofocus>
