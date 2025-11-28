@@ -14,6 +14,14 @@ public class EmployeeRecords {
         return currentBooks;
     }
 
+    public void setCurrentBooks(List<Book> currentBooks) {
+        this.currentBooks = currentBooks;
+    }
+
+    public void setPreviousBooks(List<Book> previousBooks) {
+        this.previousBooks = previousBooks;
+    }
+
     public List<Book> getPreviousBooks() {
         return previousBooks;
     }

@@ -29,7 +29,7 @@
 			<#list booksList as book>
 			<tr>
 				<td>${book.id}</td>
-				<td><strong>${book.name}</strong></td>
+				<td><strong>${book.title}</strong></td>
 				<td>${book.author}</td>
 				<td>
 					<#if book.status == "Available">
@@ -40,26 +40,34 @@
 				</td>
 				<td>
 					<#if book.status != "Available">
-					<#assign holder = findEmployeeByCurrentBook(book) />
-
-					<#if holder??>
-					<a href="/employee?id=${holder.id}">
-						${holder.firstName} ${holder.lastName}
-					</a>
-					<#else>
-					<span style="color: gray;">(Неизвестен)</span>
+					<#assign holderName = "(Неизвестен)">
+					<#list records?keys as employee>
+					<#list records[employee].currentBooks![] as currentBook>
+					<#if currentBook.id == book.id>
+					<#assign holderName = "${employee.firstName} ${employee.lastName}">
+					<a href="/employee?id=${employee.id}">${holderName}</a>
+					<#break>
 				</#if>
-			</#if>
-			</td>
-			<td>
-				<a href="/book?id=${book.id}" class="btn">Подробнее</a>
-			</td>
-			</tr>
 			</#list>
-			</tbody>
-		</table>
-	</div>
+			<#if holderName != "(Неизвестен)">
+			<#break>
+			</#if>
+		</#list>
+		<#if holderName == "(Неизвестен)">
+		<span style="color: gray;">${holderName}</span>
+	</#if>
+</#if>
+</td>
+<td>
+	<a href="/book?id=${book.id}" class="btn">Подробнее</a>
+</td>
+</tr>
+</#list>
+</tbody>
+</table>
 </div>
+</div>
+
 <div class="container">
 	<div class="card">
 		<h1>Список сотрудников</h1>
@@ -84,13 +92,13 @@
 
 				<td>
 					<#list record.currentBooks![] as book>
-					• ${book.name} <#sep><br></#sep>
+					• ${book.title} <#sep><br></#sep>
 			</#list>
 			</td>
 
 			<td>
 				<#list record.previousBooks![] as book>
-				✔ ${book.name} <#sep><br></#sep>
+				✔ ${book.title} <#sep><br></#sep>
 			</#list>
 			</td>
 
@@ -103,5 +111,6 @@
 		</table>
 	</div>
 </div>
+
 </body>
 </html>

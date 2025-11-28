@@ -3,36 +3,29 @@ package kg.attractor.java.model;
 import java.util.Objects;
 
 public class Employee {
-    private int id;
-    private String login;
-    private String password;
+    private String id;
     private String firstName;
+    private String password;
     private String lastName;
     private String position;
 
-    public Employee(int id, String login, String password, String firstName, String lastName, String position) {
+    public Employee() {
+    }
+
+    public Employee(String id, String firstName, String password, String lastName, String position) {
         this.id = id;
-        this.login = login;
-        this.password = password;
         this.firstName = firstName;
+        this.password = password;
         this.lastName = lastName;
         this.position = position;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getPassword() {
@@ -72,11 +65,11 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return id == employee.id && Objects.equals(login, employee.login);
+        return Objects.equals(id, employee.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login);
+        return Objects.hash(id);
     }
 }

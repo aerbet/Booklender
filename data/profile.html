@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Сотрудник: ${employee.firstName!""} ${employee.lastName!""}</title>
+	<link href="css/freemarker.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="card">
+		<h1>Сотрудник: ${employee.firstName!""} ${employee.lastName!""}</h1>
+		<p><strong>Должность:</strong> ${employee.position!""}</p>
+		<p><strong>Логин:</strong> ${employee.id}</p>
+
+		<h2>Текущие книги</h2>
+		<#if records.currentBooks?? && records.currentBooks?size gt 0>
+		<ul>
+			<#list records.currentBooks as book>
+			<li>
+				<a href="/book?id=${book.id}">${book.title}</a> (${book.author})
+			</li>
+		</#list>
+		</ul>
+		<#else>
+		<p>Нет текущих книг</p>
+	</#if>
+
+	<h2>Прочитанные книги</h2>
+	<#if records.previousBooks?? && records.previousBooks?size gt 0>
+	<ul>
+		<#list records.previousBooks as book>
+		<li>${book.title} (${book.author})</li>
+	</#list>
+	</ul>
+	<#else>
+	<p>Нет прочитанных книг</p>
+</#if>
+<br>
+<a href="/login" class="btn">Назад на страницу входа</a>
+</div>
+</div>
+</body>
+</html>
