@@ -9,19 +9,26 @@
 
 <body>
 <main>
-	<form action="/" method="post">
+	<form action="/register" method="post">
 		<fieldset>
 			<div class="legend">
 				<p>Register now!</p>
 			</div>
 			<div class="form-element">
-				<label for="user-email">email</label>
-				<input type="email" name="email" id="user-email" placeholder="your email" required autofocus>
+				<label for="user-name">email</label>
+				<input type="email" name="email" id="user-login" placeholder="your email" required autofocus>
 			</div>
 			<div class="form-element">
-				<label for="user-password">password</label>
-				<input type="password" name="user-password" id="user-password" placeholder="your password" required>
+				<label for="user-login">Никнейм</label>
+				<input type="text" name="name" id="user-name" placeholder="Your first name" required>
 			</div>
+
+			<div class="form-element">
+				<label for="user-password">Пароль</label>
+				<input type="password" name="password" id="user-password" placeholder="your password" required>
+			</div>
+
+
 			<div class="hr-line">
 				<span class="details">one more step to be our employee</span>
 			</div>

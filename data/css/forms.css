@@ -6,14 +6,15 @@ body {
 }
 
 body {
-    background: url("../bg/bg.png") 0 0 repeat;
+    /*background: url("../bg/bg.png") 0 0 repeat;*/
+    background: #f1f1f1;
 }
 
 form {
     width: 50%;
     max-width: 500px;
     min-width: 200px;
-    margin: 0 auto;
+    margin: 250px auto;
 }
 
 fieldset {
@@ -58,7 +59,6 @@ fieldset label {
 }
 
 .details {
-    background-color: #fff;
     padding: 0 15px;
 }
 
@@ -75,4 +75,10 @@ fieldset label {
     font-weight: bold;
     color: white;
     cursor: pointer;
+}
+
+.register-link {
+    padding-top: 20px;
+    font-size: 18px;
+    text-align: center;
 }
