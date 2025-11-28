@@ -1,74 +1,81 @@
 package kg.attractor.java.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import kg.attractor.java.utils.FileUtil;
+
+import java.util.*;
 
 public class Booklender {
-    private Map<Employee, EmployeeRecords> records = new HashMap<>();
-    private List<Book> booksList = new ArrayList<>();
+    private BooklenderData booklenderData;
+    private final Map<String, Employee> usersMap = new HashMap<>();
 
     public Booklender() {
-        initData();
+        loadData();
     }
 
-    private void initData() {
-        Book book1 = new Book(1, "Harry Potter", "Magic world", "Available", "J.K. Rowling", LocalDateTime.now(), LocalDateTime.now(), "https://cdn.waterstones.com/bookjackets/large/9781/4088/9781408855652.jpg");
-        Book book2 = new Book(2, "Lord of the Rings", "Epic fantasy", "Выдана", "J.R.R. Tolkien", LocalDateTime.now(), LocalDateTime.now(), "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ97pFcvAFG220EJKoo5_niRpgkTooVLyDz-g&s");
-        Book book3 = new Book(3, "Java for Beginners", "Coding", "Available", "Herbert Schildt", LocalDateTime.now(), LocalDateTime.now(), "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg");
-        booksList.add(book1);
-        booksList.add(book2);
-        booksList.add(book3);
-
-        Employee admin = new Employee(1, "admin", "pass", "John", "Doe", "Boss");
-        Employee junior = new Employee(2, "user", "pass", "Kevin", "Lee", "Junior Dev");
-        records.put(admin, new EmployeeRecords());
-        records.put(junior, new EmployeeRecords());
-
-        EmployeeRecords adminRecords = records.get(admin);
-        adminRecords.addCurrentBook(book1);
-        adminRecords.finishBook(book1);
-
-        EmployeeRecords juniorRecords = records.get(junior);
-        juniorRecords.addCurrentBook(book2);
-    }
-
-    public Employee findEmployeeByCurrentBook(Book targetBook) {
-        for (Map.Entry<Employee, EmployeeRecords> entry : records.entrySet()) {
-            Employee employee = entry.getKey();
-            EmployeeRecords empRecords = entry.getValue();
-
-            if (empRecords.getCurrentBooks().contains(targetBook)) {
-                return employee;
+    private void loadData() {
+        this.booklenderData = FileUtil.readData();
+        usersMap.clear();
+        if (booklenderData.getEmployees() != null) {
+            for (Employee e : booklenderData.getEmployees()) {
+                usersMap.put(e.getId(), e);
             }
         }
-        return null;
     }
 
-    public Book findBookById(int id) {
-        for (Book book : booksList) {
-            if (book.getId() == id) {
-                return book;
-            }
+    public boolean register(String email, String password, String firstName) {
+        if (usersMap.containsKey(email)) {
+            return false;
+        }
+
+        Employee newEmployee = new Employee(email, firstName, password, "", "Новый сотрудник");
+
+        booklenderData.getEmployees().add(newEmployee);
+        usersMap.put(email, newEmployee);
+
+        FileUtil.saveData(booklenderData);
+
+        return true;
+    }
+
+    public Employee login(String email, String password) {
+        Employee found = usersMap.get(email);
+        if (found != null && found.getPassword().equals(password)) {
+            return found;
         }
         return null;
     }
 
     public List<Book> getBooksList() {
-        return booksList;
+        return booklenderData.getBooks();
     }
 
-    public void setBooksList(List<Book> booksList) {
-        this.booksList = booksList;
+    public Book findBookById(int id) {
+        return booklenderData.getBooks().stream()
+                .filter(b -> b.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
-    public Map<Employee, EmployeeRecords> getRecords() {
-        return records;
+    public List<Employee> getAllEmployees() {
+        return booklenderData.getEmployees();
     }
 
-    public void setRecords(Map<Employee, EmployeeRecords> records) {
-        this.records = records;
+    public Map<Employee, List<Book>> getCurrentBooksMap() {
+        Map<Employee, List<Book>> map = new HashMap<>();
+        Map<String, List<Integer>> recordsJson = booklenderData.getRecords();
+
+        for (Employee e : getAllEmployees()) {
+            List<Integer> bookIds = recordsJson.getOrDefault(e.getId(), List.of());
+            List<Book> books = bookIds.stream()
+                    .map(this::findBookById)
+                    .filter(Objects::nonNull)
+                    .toList();
+            map.put(e, books);
+        }
+        return map;
+    }
+
+    public Map<String, List<Integer>> getRecordsJson() {
+        return booklenderData.getRecords();
     }
 }

@@ -5,23 +5,26 @@ import java.util.Objects;
 
 public class Book {
     private int id;
-    private String name;
+    private String title;
     private String description;
     private String status;
     private String author;
     private LocalDateTime issueDate;
     private LocalDateTime returnDate;
-    private String imageUrl;
+    private String image;
+
+    public Book() {
+    }
 
     public Book(int id, String name, String description, String status, String author, LocalDateTime issueDate, LocalDateTime returnDate, String imageUrl) {
         this.id = id;
-        this.name = name;
+        this.title = name;
         this.description = description;
         this.status = status;
         this.author = author;
         this.issueDate = issueDate;
         this.returnDate = returnDate;
-        this.imageUrl = imageUrl;
+        this.image = imageUrl;
     }
 
     public int getId() {
@@ -30,14 +33,6 @@ public class Book {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
@@ -80,12 +75,19 @@ public class Book {
         this.returnDate = returnDate;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getTitle() {
+        return title;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
@@ -93,11 +95,11 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id == book.id && Objects.equals(name, book.name);
+        return id == book.id && Objects.equals(title, book.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, title);
     }
 }
