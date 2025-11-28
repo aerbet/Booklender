@@ -10,7 +10,6 @@ import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
 import kg.attractor.java.server.Utils;
-import kg.attractor.java.utils.FileUtil;
 
 import java.awt.*;
 import java.io.*;
@@ -44,7 +43,20 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void profileHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "profile.html", null);
+        Map<String, Object> data = new HashMap<>();
+        Employee employee = null;
+
+        if (employee == null) {
+            Employee dummy = new Employee("guest@example.com", "Некий", "none", "Пользователь", "No position");
+
+            data.put("employee", dummy);
+            data.put("records", new HashMap<>());
+        } else {
+            data.put("employee", employee);
+            data.put("records", new HashMap<>());
+        }
+
+        renderTemplate(exchange, "profile.html", data);
     }
 
     private void registerHandler(HttpExchange exchange) {
