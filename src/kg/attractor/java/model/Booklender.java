@@ -12,6 +12,18 @@ public class Booklender {
         loadData();
     }
 
+    public BooklenderData getBooklenderData() {
+        return booklenderData;
+    }
+
+    public void setBooklenderData(BooklenderData booklenderData) {
+        this.booklenderData = booklenderData;
+    }
+
+    public Map<String, Employee> getUsersMap() {
+        return usersMap;
+    }
+
     private void loadData() {
         this.booklenderData = FileUtil.readData();
         usersMap.clear();
@@ -60,22 +72,20 @@ public class Booklender {
         return booklenderData.getEmployees();
     }
 
-    public Map<Employee, List<Book>> getCurrentBooksMap() {
-        Map<Employee, List<Book>> map = new HashMap<>();
-        Map<String, List<Integer>> recordsJson = booklenderData.getRecords();
+    public List<EmployeeRecordData> getEmployeeRecordsTemplate() {
+        List<EmployeeRecordData> employeeRecordsList = new ArrayList<>();
+        Map<String, EmployeeRecords> recordsMap = booklenderData.getEmployeeRecords();
 
-        for (Employee e : getAllEmployees()) {
-            List<Integer> bookIds = recordsJson.getOrDefault(e.getId(), List.of());
-            List<Book> books = bookIds.stream()
-                    .map(this::findBookById)
-                    .filter(Objects::nonNull)
-                    .toList();
-            map.put(e, books);
+        for (Employee employee : getAllEmployees()) {
+            EmployeeRecords records = recordsMap.getOrDefault(employee.getId(), new EmployeeRecords());
+            EmployeeRecordData recordData = new EmployeeRecordData(employee, records);
+            employeeRecordsList.add(recordData);
         }
-        return map;
+
+        return employeeRecordsList;
     }
 
-    public Map<String, List<Integer>> getRecordsJson() {
-        return booklenderData.getRecords();
+    public Map<String, EmployeeRecords> getEmployeeRecordsMap() {
+        return booklenderData.getEmployeeRecords();
     }
 }
