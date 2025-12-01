@@ -40,22 +40,32 @@
 				</td>
 				<td>
 					<#if book.status != "Available">
-					<#assign holderName = "(Неизвестен)">
-					<#list records?keys as employee>
-					<#list records[employee].currentBooks![] as currentBook>
+					<#assign holderId = "">
+					<#-- 1. Ищем ID сотрудника в новой карте записей -->
+					<#list employeeRecordsMap?keys as employeeId>
+					<#list employeeRecordsMap[employeeId].currentBooks![] as currentBook>
 					<#if currentBook.id == book.id>
-					<#assign holderName = "${employee.firstName} ${employee.lastName}">
-					<a href="/employee?id=${employee.id}">${holderName}</a>
+					<#assign holderId = employeeId>
 					<#break>
 				</#if>
 			</#list>
-			<#if holderName != "(Неизвестен)">
+			<#if holderId != "">
 			<#break>
 			</#if>
 		</#list>
-		<#if holderName == "(Неизвестен)">
-		<span style="color: gray;">${holderName}</span>
+
+		<#-- 2. Если ID найден, ищем объект Employee в usersMap -->
+		<#if holderId != "">
+		<#assign holderEmployee = usersMap[holderId]!>
+		<#if holderEmployee??>
+		<#assign holderName = "${holderEmployee.firstName} ${holderEmployee.lastName}">
+		<a href="/employee?id=${holderEmployee.id}">${holderName}</a>
+		<#else>
+		<span style="color: gray;">(Неизвестен)</span>
 	</#if>
+	<#else>
+	<span style="color: gray;">(Неизвестен)</span>
+</#if>
 </#if>
 </td>
 <td>
@@ -83,21 +93,21 @@
 			</tr>
 			</thead>
 			<tbody>
-			<#list records as employee, record>
+			<#list employeeRecords as recordData>
 			<tr>
-				<td><a href="/employee?id=${employee.id}">
-					${employee.firstName} ${employee.lastName}
+				<td><a href="/employee?id=${recordData.employee.id}">
+					${recordData.employee.firstName} ${recordData.employee.lastName}
 				</a></td>
-				<td>${employee.position}</td>
+				<td>${recordData.employee.position}</td>
 
 				<td>
-					<#list record.currentBooks![] as book>
+					<#list recordData.records.currentBooks![] as book>
 					• ${book.title} <#sep><br></#sep>
 			</#list>
 			</td>
 
 			<td>
-				<#list record.previousBooks![] as book>
+				<#list recordData.records.previousBooks![] as book>
 				✔ ${book.title} <#sep><br></#sep>
 			</#list>
 			</td>
