@@ -1,4 +1,4 @@
-package kg.attractor.java.lesson;
+package kg.attractor.java.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
