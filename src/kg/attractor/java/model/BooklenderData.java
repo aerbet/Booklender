@@ -8,7 +8,7 @@ import java.util.Map;
 public class BooklenderData {
     private List<Employee> employees = new ArrayList<>();
     private List<Book> books = new ArrayList<>();
-    private Map<String, List<Integer>> records = new HashMap<>();
+    private Map<String, EmployeeRecords> employeeRecords = new HashMap<>();
 
     public BooklenderData() {}
 
@@ -28,11 +28,11 @@ public class BooklenderData {
         this.books = books;
     }
 
-    public Map<String, List<Integer>> getRecords() {
-        return records;
+    public Map<String, EmployeeRecords> getEmployeeRecords() {
+        return employeeRecords;
     }
 
-    public void setRecords(Map<String, List<Integer>> records) {
-        this.records = records;
+    public void setEmployeeRecords(Map<String, EmployeeRecords> employeeRecords) {
+        this.employeeRecords = employeeRecords;
     }
 }
