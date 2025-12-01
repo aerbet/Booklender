@@ -23,6 +23,12 @@
     "password" : "qwe",
     "lastName" : "",
     "position" : "Новый сотрудник"
+  }, {
+    "id" : "worhd0405@gmail.com",
+    "firstName" : "qwe",
+    "password" : "qwe",
+    "lastName" : "",
+    "position" : "Новый сотрудник"
   } ],
   "books" : [ {
     "id" : 1,
@@ -52,8 +58,23 @@
     "returnDate" : "2025-01-06T12:00:00",
     "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
   } ],
-  "records" : {
-    "1" : [ 2 ],
-    "2" : [ ]
+  "employeeRecords" : {
+    "admin@gmail.com" : {
+      "currentBooks" : [ {
+        "id" : 2,
+        "title" : "Lord of the Rings",
+        "description" : "Epic fantasy",
+        "status" : "Выдана",
+        "author" : "J.R.R. Tolkien",
+        "issueDate" : "2025-01-03T12:00:00",
+        "returnDate" : "2025-01-04T12:00:00",
+        "image" : "..."
+      } ],
+      "previousBooks" : [ ]
+    },
+    "user@gmail.com" : {
+      "currentBooks" : [ ],
+      "previousBooks" : [ ]
+    }
   }
 }
