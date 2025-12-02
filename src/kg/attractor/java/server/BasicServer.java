@@ -25,6 +25,7 @@ public class BasicServer {
   private final String dataDir = "data";
   private final Booklender booklender;
   private final HttpServer server;
+
   private final Map<String, Employee> sessions = new HashMap<>();
   private final static String SESSION_COOKIE_NAME = "sessionId";
   private final static int SESSION_MAX_AGE_SECONDS = 600;
@@ -35,9 +36,9 @@ public class BasicServer {
     this.booklender = new Booklender();
 
     registerGet("/sample", this::freemarkerSampleHandler);
-    registerGet("/books", this::freemarkerBooksHandler);
-    registerGet("/book", this::freemarkerBookHandler);
-    registerGet("/employee", this::freemarkerEmployeeHandler);
+    registerGet("/books", this::booksHandler);
+    registerGet("/book", this::bookHandler);
+    registerGet("/employee", this::employeeHandler);
     registerGet("/login", this::loginHandler);
     registerGet("/register", this::registerHandler);
     registerGet("/profile", this::profileHandler);
@@ -126,108 +127,6 @@ public class BasicServer {
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
-  }
-
-  private static String makeKey(String method, String route) {
-    return String.format("%s %s", method.toUpperCase(), route);
-  }
-
-  private static String makeKey(HttpExchange exchange) {
-    var method = exchange.getRequestMethod();
-    var path = exchange.getRequestURI().getPath();
-
-    var index = path.lastIndexOf(".");
-    var extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
-
-    return makeKey(method, extOrPath);
-  }
-
-  private static void setContentType(HttpExchange exchange, ContentType type) {
-    exchange.getResponseHeaders().set("Content-Type", String.valueOf(type));
-  }
-
-  private static HttpServer createServer(String host, int port) throws IOException {
-    var msg = "Starting server on http://%s:%s/%n";
-    System.out.printf(msg, host, port);
-    var address = new InetSocketAddress(host, port);
-    return HttpServer.create(address, 50);
-  }
-
-  private void registerCommonHandlers() {
-    server.createContext("/", this::handleIncomingServerRequests);
-
-    registerGet("/", exchange -> sendFile(exchange, makeFilePath("index.html"), ContentType.TEXT_HTML));
-
-    registerFileHandler(".css", ContentType.TEXT_CSS);
-    registerFileHandler(".html", ContentType.TEXT_HTML);
-    registerFileHandler(".jpg", ContentType.IMAGE_JPEG);
-    registerFileHandler(".png", ContentType.IMAGE_PNG);
-
-  }
-
-  protected final void registerGet(String route, RouteHandler handler) {
-    getRoutes().put("GET " + route, handler);
-  }
-
-  protected final void registerPost(String route, RouteHandler handler) {
-    getRoutes().put("POST " + route, handler);
-  }
-
-  protected final void registerFileHandler(String fileExt, ContentType type) {
-    registerGet(fileExt, exchange -> sendFile(exchange, makeFilePath(exchange), type));
-  }
-
-  protected final Map<String, RouteHandler> getRoutes() {
-    return routes;
-  }
-
-  protected final void sendFile(HttpExchange exchange, Path pathToFile, ContentType contentType) {
-    try {
-      if (Files.notExists(pathToFile)) {
-        respond404(exchange);
-        return;
-      }
-      var data = Files.readAllBytes(pathToFile);
-      sendByteData(exchange, ResponseCodes.OK, contentType, data);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private Path makeFilePath(HttpExchange exchange) {
-    return makeFilePath(exchange.getRequestURI().getPath());
-  }
-
-  protected Path makeFilePath(String... s) {
-    return Path.of(dataDir, s);
-  }
-
-  protected final void sendByteData(HttpExchange exchange, ResponseCodes responseCode,
-                                    ContentType contentType, byte[] data) throws IOException {
-    try (var output = exchange.getResponseBody()) {
-      setContentType(exchange, contentType);
-      exchange.sendResponseHeaders(responseCode.getCode(), 0);
-      output.write(data);
-      output.flush();
-    }
-  }
-
-  private void respond404(HttpExchange exchange) {
-    try {
-      var data = "404 Not found".getBytes();
-      sendByteData(exchange, ResponseCodes.NOT_FOUND, ContentType.TEXT_PLAIN, data);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void handleIncomingServerRequests(HttpExchange exchange) {
-    var route = getRoutes().getOrDefault(makeKey(exchange), this::respond404);
-    route.handle(exchange);
-  }
-
-  public final void start() {
-    server.start();
   }
 
   private void profileHandler(HttpExchange exchange) {
@@ -336,7 +235,7 @@ public class BasicServer {
     }
   }
 
-  private void freemarkerEmployeeHandler(HttpExchange exchange) {
+  private void employeeHandler(HttpExchange exchange) {
     try {
       String query = exchange.getRequestURI().getQuery();
       Map<String, String> params = Utils.parseUrlEncoded(query, "&");
@@ -367,7 +266,7 @@ public class BasicServer {
     }
   }
 
-  private void freemarkerBookHandler(HttpExchange exchange) {
+  private void bookHandler(HttpExchange exchange) {
     try {
       String query = exchange.getRequestURI().getQuery();
       Map<String, String> params = Utils.parseUrlEncoded(query, "&");
@@ -412,7 +311,7 @@ public class BasicServer {
     }
   }
 
-  private void freemarkerBooksHandler(HttpExchange exchange) {
+  private void booksHandler(HttpExchange exchange) {
     Map<String, Object> model = new HashMap<>();
 
     model.put("employeeRecords", booklender.getEmployeeRecordsTemplate());
@@ -510,5 +409,107 @@ public class BasicServer {
     }
 
     return sessions.get(sessionId);
+  }
+
+  private static String makeKey(String method, String route) {
+    return String.format("%s %s", method.toUpperCase(), route);
+  }
+
+  private static String makeKey(HttpExchange exchange) {
+    var method = exchange.getRequestMethod();
+    var path = exchange.getRequestURI().getPath();
+
+    var index = path.lastIndexOf(".");
+    var extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
+
+    return makeKey(method, extOrPath);
+  }
+
+  private static void setContentType(HttpExchange exchange, ContentType type) {
+    exchange.getResponseHeaders().set("Content-Type", String.valueOf(type));
+  }
+
+  private static HttpServer createServer(String host, int port) throws IOException {
+    var msg = "Starting server on http://%s:%s/%n";
+    System.out.printf(msg, host, port);
+    var address = new InetSocketAddress(host, port);
+    return HttpServer.create(address, 50);
+  }
+
+  private void registerCommonHandlers() {
+    server.createContext("/", this::handleIncomingServerRequests);
+
+    registerGet("/", exchange -> sendFile(exchange, makeFilePath("index.html"), ContentType.TEXT_HTML));
+
+    registerFileHandler(".css", ContentType.TEXT_CSS);
+    registerFileHandler(".html", ContentType.TEXT_HTML);
+    registerFileHandler(".jpg", ContentType.IMAGE_JPEG);
+    registerFileHandler(".png", ContentType.IMAGE_PNG);
+
+  }
+
+  protected final void registerGet(String route, RouteHandler handler) {
+    getRoutes().put("GET " + route, handler);
+  }
+
+  protected final void registerPost(String route, RouteHandler handler) {
+    getRoutes().put("POST " + route, handler);
+  }
+
+  protected final void registerFileHandler(String fileExt, ContentType type) {
+    registerGet(fileExt, exchange -> sendFile(exchange, makeFilePath(exchange), type));
+  }
+
+  protected final Map<String, RouteHandler> getRoutes() {
+    return routes;
+  }
+
+  protected final void sendFile(HttpExchange exchange, Path pathToFile, ContentType contentType) {
+    try {
+      if (Files.notExists(pathToFile)) {
+        respond404(exchange);
+        return;
+      }
+      var data = Files.readAllBytes(pathToFile);
+      sendByteData(exchange, ResponseCodes.OK, contentType, data);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private Path makeFilePath(HttpExchange exchange) {
+    return makeFilePath(exchange.getRequestURI().getPath());
+  }
+
+  protected Path makeFilePath(String... s) {
+    return Path.of(dataDir, s);
+  }
+
+  protected final void sendByteData(HttpExchange exchange, ResponseCodes responseCode,
+                                    ContentType contentType, byte[] data) throws IOException {
+    try (var output = exchange.getResponseBody()) {
+      setContentType(exchange, contentType);
+      exchange.sendResponseHeaders(responseCode.getCode(), 0);
+      output.write(data);
+      output.flush();
+    }
+  }
+
+  private void respond404(HttpExchange exchange) {
+    try {
+      var data = "404 Not found".getBytes();
+      sendByteData(exchange, ResponseCodes.NOT_FOUND, ContentType.TEXT_PLAIN, data);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void handleIncomingServerRequests(HttpExchange exchange) {
+    var route = getRoutes().getOrDefault(makeKey(exchange), this::respond404);
+    route.handle(exchange);
+  }
+
+  public final void start() {
+    server.start();
   }
 }
