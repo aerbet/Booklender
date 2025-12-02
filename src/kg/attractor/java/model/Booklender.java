@@ -94,4 +94,38 @@ public class Booklender {
 
         return recordsMap.getOrDefault(employeeId, new EmployeeRecords());
     }
+
+    public boolean issueBook(String employeeId, int bookId) {
+        Book book = findBookById(bookId);
+        if (book == null || !book.getStatus().equals("Available")) {
+            return false;
+        }
+
+        book.setStatus(employeeId);
+        EmployeeRecords employeeRecords = getEmployeeRecordsForEmployee(employeeId);
+        employeeRecords.getCurrentBooks().add(book);
+        booklenderData.getEmployeeRecords().put(employeeId, employeeRecords);
+        FileUtil.saveData(booklenderData);
+
+        return true;
+    }
+
+    public boolean returnBook(String employeeId, int bookId) {
+        Book book = findBookById(bookId);
+        if (book == null || !book.getStatus().equals(employeeId)) {
+            return false;
+        }
+
+        EmployeeRecords employeeRecords = getEmployeeRecordsForEmployee(employeeId);
+        boolean removed = employeeRecords.getCurrentBooks().removeIf(b -> b.getId() == book.getId());
+
+        if (removed) {
+            employeeRecords.getPreviousBooks().add(book);
+            book.setStatus("Available");
+            FileUtil.saveData(booklenderData);
+            return true;
+        }
+
+        return false;
+    }
 }
