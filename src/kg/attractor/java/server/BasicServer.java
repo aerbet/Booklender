@@ -37,17 +37,38 @@ public class BasicServer {
     registerGet("/sample", this::freemarkerSampleHandler);
     registerGet("/books", this::freemarkerBooksHandler);
     registerGet("/book", this::freemarkerBookHandler);
-    registerGet("/employees", this::freemarkerEmployeesHandler);
     registerGet("/employee", this::freemarkerEmployeeHandler);
     registerGet("/login", this::loginHandler);
     registerGet("/register", this::registerHandler);
     registerGet("/profile", this::profileHandler);
     registerGet("/cookie", this::cookieHandler);
+    registerGet("/logout", this::logoutHandler);
 
     registerPost("/login", this::loginPostHandler);
     registerPost("/register", this::registerPostHandler);
     registerPost("/issue", this::issueBookHandler);
     registerPost("/return", this::returnBookHandler);
+  }
+
+  private void logoutHandler(HttpExchange exchange) {
+    String cookieString = getCookies(exchange);
+    Map<String, String> cookies = Cookie.parse(cookieString);
+    String sessionId = cookies.get(SESSION_COOKIE_NAME);
+
+    if (sessionId != null) {
+      sessions.remove(sessionId);
+
+      Cookie<String> sessionCookie = new Cookie<>(SESSION_COOKIE_NAME, sessionId);
+      sessionCookie.setMaxAge(0);
+      setCookie(exchange, sessionCookie);
+    }
+
+    exchange.getResponseHeaders().set("Location", "/login");
+    try {
+      exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), -1);
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
   }
 
   private void issueBookHandler(HttpExchange exchange) {
@@ -134,19 +155,10 @@ public class BasicServer {
   }
 
   private void registerCommonHandlers() {
-    // самый основной обработчик, который будет определять
-    // какие обработчики вызывать в дальнейшем
     server.createContext("/", this::handleIncomingServerRequests);
 
-    // специфичные обработчики, которые выполняют свои действия
-    // в зависимости от типа запроса
-
-    // обработчик для корневого запроса
-    // именно этот обработчик отвечает что отображать,
-    // когда пользователь запрашивает localhost:9889
     registerGet("/", exchange -> sendFile(exchange, makeFilePath("index.html"), ContentType.TEXT_HTML));
 
-    // эти обрабатывают запросы с указанными расширениями
     registerFileHandler(".css", ContentType.TEXT_CSS);
     registerFileHandler(".html", ContentType.TEXT_HTML);
     registerFileHandler(".jpg", ContentType.IMAGE_JPEG);
@@ -328,30 +340,32 @@ public class BasicServer {
   private void freemarkerEmployeeHandler(HttpExchange exchange) {
     try {
       String query = exchange.getRequestURI().getQuery();
-      int employeeId = -1;
-      if (query != null && query.startsWith("id=")) {
-        employeeId = Integer.parseInt(query.substring(3));
-      }
+      Map<String, String> params = Utils.parseUrlEncoded(query, "&");
+      String employeeId = params.get("id");
 
       Booklender lender = getBooklender();
-      Employee found = null;
-      EmployeeRecords empRecords = null;
+      Employee found = lender.getUsersMap().get(employeeId);
+
       if (found == null) {
+        respond404(exchange);
         return;
       }
+
+      EmployeeRecords empRecords = lender.getEmployeeRecordsForEmployee(found.getId());
 
       Map<String, Object> model = new HashMap<>();
       model.put("employee", found);
       model.put("records", empRecords);
 
       renderTemplate(exchange, "employee.html", model);
-    } catch (NumberFormatException e) {
+    } catch (Exception e) {
       e.printStackTrace();
+      try {
+        sendByteData(exchange, ResponseCodes.SERVER_ERROR, ContentType.TEXT_PLAIN, "Server error".getBytes());
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
     }
-  }
-
-  private void freemarkerEmployeesHandler(HttpExchange exchange) {
-    renderTemplate(exchange, "employees.html", getBooklender());
   }
 
   private void freemarkerBookHandler(HttpExchange exchange) {
@@ -412,13 +426,8 @@ public class BasicServer {
   private static Configuration initFreeMarker() {
     try {
       Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
-      // путь к каталогу в котором у нас хранятся шаблоны
-      // это может быть совершенно другой путь, чем тот, откуда сервер берёт файлы
-      // которые отправляет пользователю
       cfg.setDirectoryForTemplateLoading(new File("data"));
 
-      // прочие стандартные настройки о них читать тут
-      // https://freemarker.apache.org/docs/pgui_quickstart_createconfiguration.html
       cfg.setDefaultEncoding("UTF-8");
       cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
       cfg.setLogTemplateExceptions(false);
@@ -436,28 +445,16 @@ public class BasicServer {
 
   protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
     try {
-      // Загружаем шаблон из файла по имени.
-      // Шаблон должен находится по пути, указанном в конфигурации
       Template temp = freemarker.getTemplate(templateFile);
 
-      // freemarker записывает преобразованный шаблон в объект класса writer
-      // а наш сервер отправляет клиенту массивы байт
-      // по этому нам надо сделать "мост" между этими двумя системами
-
-      // создаём поток, который сохраняет всё, что в него будет записано в байтовый массив
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      // создаём объект, который умеет писать в поток и который подходит для freemarker
       try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 
-        // обрабатываем шаблон заполняя его данными из модели
-        // и записываем результат в объект "записи"
         temp.process(dataModel, writer);
         writer.flush();
 
-        // получаем байтовый поток
         var data = stream.toByteArray();
 
-        // отправляем результат клиенту
         sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, data);
       }
     } catch (IOException | TemplateException e) {
@@ -470,8 +467,6 @@ public class BasicServer {
   }
 
   private SampleDataModel getSampleDataModel() {
-    // возвращаем экземпляр тестовой модели-данных
-    // которую freemarker будет использовать для наполнения шаблона
     return new SampleDataModel();
   }
 

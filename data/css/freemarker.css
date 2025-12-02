@@ -154,3 +154,8 @@ h2 { color: var(--primary); font-weight: 400; }
 }
 .green:hover {
     background: #028a37;}
+.red {
+    background: #ae2727;
+}
+.red:hover {
+    background: #8a0202;}
