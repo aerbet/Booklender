@@ -6,7 +6,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import kg.attractor.java.model.SampleDataModel;
 import kg.attractor.java.model.*;
 
 import java.io.*;
@@ -35,7 +34,6 @@ public class BasicServer {
     registerCommonHandlers();
     this.booklender = new Booklender();
 
-    registerGet("/sample", this::freemarkerSampleHandler);
     registerGet("/books", this::booksHandler);
     registerGet("/book", this::bookHandler);
     registerGet("/employee", this::employeeHandler);
@@ -337,10 +335,6 @@ public class BasicServer {
     }
   }
 
-  private void freemarkerSampleHandler(HttpExchange exchange) {
-    renderTemplate(exchange, "sample.html", getSampleDataModel());
-  }
-
   protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
     try {
       Template temp = freemarker.getTemplate(templateFile);
@@ -362,10 +356,6 @@ public class BasicServer {
 
   private Booklender getBooklender() {
     return booklender;
-  }
-
-  private SampleDataModel getSampleDataModel() {
-    return new SampleDataModel();
   }
 
   protected static String getContentType(HttpExchange exchange) {
