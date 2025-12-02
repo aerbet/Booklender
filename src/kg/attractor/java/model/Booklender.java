@@ -88,4 +88,10 @@ public class Booklender {
     public Map<String, EmployeeRecords> getEmployeeRecordsMap() {
         return booklenderData.getEmployeeRecords();
     }
+
+    public EmployeeRecords getEmployeeRecordsForEmployee(String employeeId) {
+        Map<String, EmployeeRecords> recordsMap = booklenderData.getEmployeeRecords();
+
+        return recordsMap.getOrDefault(employeeId, new EmployeeRecords());
+    }
 }
