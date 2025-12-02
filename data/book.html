@@ -5,7 +5,7 @@
 	<meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
 		  name="viewport">
 	<meta content="ie=edge" http-equiv="X-UA-Compatible">
-	<title>${book.name} - Детали</title>
+	<title>${book.title} - Детали</title>
 	<link href="css/freemarker.css" rel="stylesheet">
 </head>
 <body>
@@ -17,12 +17,12 @@
 	<div class="card">
 		<div class="book-details-grid">
 			<div>
-				<img src="${book.imageUrl}"
+				<img src="${book.image}"
 					 alt="Обложка книги" class="book-cover">
 			</div>
 
 			<div>
-				<h1>${book.name}</h1>
+				<h1>${book.title}</h1>
 				<h2>${book.author}</h2>
 				<hr>
 
@@ -30,13 +30,41 @@
 				<p><strong>Описание:</strong></p>
 				<p>${book.description!"Описания пока нет."}</p>
 
-				<div style="margin-top: 20px;">
-					<p><strong>Текущий статус:</strong></p>
-					<#if book.status == "Available">
-					<span class="badge available" style="font-size: 1.2rem;">На полке</span>
-					<#else>
-					<span class="badge issued" style="font-size: 1.2rem;">Выдана: ${book.status}</span>
-				</#if>
+							<div style="margin-top: 20px;">
+								<p><strong>Текущий статус:</strong></p>
+
+								<#assign isAvailable = (book.status == "Available")>
+								<#assign isCurrentUserHolder = (currentUser?? && book.status == currentUser.id)>
+
+								<#if isAvailable>
+								<span class="badge available" style="font-size: 1.2rem;">На полке</span>
+								<#else>
+								<span class="badge issued" style="font-size: 1.2rem;">Выдана:
+									<#if holder??>
+											<a href="/employee?id=${holder.id}">${holder.firstName} ${holder.lastName}</a>
+									<#else>
+											(Неизвестно)
+									</#if>
+								</span>
+							</#if>
+
+							<br><br>
+
+							<#if currentUser??>
+							<#if isAvailable>
+							<form method="POST" action="/issue">
+								<input type="hidden" name="bookId" value="${book.id}">
+								<button type="submit" class="btn">Забрать книгу</button>
+							</form>
+							<#elseif isCurrentUserHolder>
+							<form method="POST" action="/return">
+								<input type="hidden" name="bookId" value="${book.id}">
+								<button type="submit" class="btn btn-red">Вернуть книгу</button>
+							</form>
+						</#if>
+						<#else>
+						<span style="color: gray;">Для действий с книгой необходимо <a href="/login">авторизоваться</a>.</span>
+					</#if>
 				</div>
 			</div>
 		</div>
