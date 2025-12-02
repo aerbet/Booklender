@@ -68,13 +68,24 @@
         "author" : "J.R.R. Tolkien",
         "issueDate" : "2025-01-03T12:00:00",
         "returnDate" : "2025-01-04T12:00:00",
-        "image" : "..."
+        "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ97pFcvAFG220EJKoo5_niRpgkTooVLyDz-g&s"
       } ],
       "previousBooks" : [ ]
     },
     "user@gmail.com" : {
       "currentBooks" : [ ],
-      "previousBooks" : [ ]
+      "previousBooks" : [
+        {
+          "id" : 3,
+          "title" : "Java for Beginners",
+          "description" : "Coding",
+          "status" : "Available",
+          "author" : "Herbert Schildt",
+          "issueDate" : "2025-01-05T12:00:00",
+          "returnDate" : "2025-01-06T12:00:00",
+          "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+        }
+      ]
     }
   }
 }
