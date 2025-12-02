@@ -41,7 +41,6 @@ public class BasicServer {
     registerGet("/login", this::loginHandler);
     registerGet("/register", this::registerHandler);
     registerGet("/profile", this::profileHandler);
-    registerGet("/cookie", this::cookieHandler);
     registerGet("/logout", this::logoutHandler);
 
     registerPost("/login", this::loginPostHandler);
@@ -488,30 +487,6 @@ public class BasicServer {
     }
 
     return "";
-  }
-
-  private void cookieHandler(HttpExchange exchange) {
-    Cookie c1 = Cookie.make("userId", 123);
-    setCookie(exchange, c1);
-    Cookie c2 = Cookie.make("user-email", "worhd0405@gmail.com");
-    setCookie(exchange, c2);
-    Cookie c3 = Cookie.make("resticted()<>@;:\\\"/[]{}?=", "()<>@;:\\\"/[]{}?=");
-    setCookie(exchange, c3);
-
-    Map<String, Object> data = new HashMap<>();
-    String name = "times";
-
-    String incomeCookie = getCookies(exchange);
-    Map<String, String> cookies = Cookie.parse(incomeCookie);
-
-    String cookieTimes = cookies.getOrDefault(name, "0");
-    int times = Integer.parseInt(cookieTimes) + 1;
-    setCookie(exchange, Cookie.make(name, times));
-
-    data.put("cookies", cookies);
-    data.put(name, times);
-
-    renderTemplate(exchange, "cookie.html", data);
   }
 
   protected void setCookie(HttpExchange exchange, Cookie cookie) {
