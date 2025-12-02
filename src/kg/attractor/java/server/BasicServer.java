@@ -375,6 +375,12 @@ public class BasicServer {
 
       Employee currentUser = getAuthenticatedUser(exchange);
 
+      int currentBooksCount = 0;
+      if (currentUser != null) {
+        EmployeeRecords userRecords = lender.getEmployeeRecordsForEmployee(currentUser.getId());
+        currentBooksCount = userRecords.getCurrentBooks().size();
+      }
+
       Employee holder = null;
       if (!book.getStatus().equals("Available")) {
         String holderId = book.getStatus();
@@ -385,6 +391,7 @@ public class BasicServer {
       model.put("book", book);
       model.put("currentUser", currentUser);
       model.put("holder", holder);
+      model.put("currentBooksCount", currentBooksCount);
 
       renderTemplate(exchange, "book.html", model);
     } catch (NumberFormatException e) {
@@ -525,7 +532,7 @@ public class BasicServer {
 
   protected Employee getAuthenticatedUser(HttpExchange exchange) {
     String cookieString = getCookies(exchange);
-    Map <String, String> cookies = Cookie.parse(cookieString);
+    Map<String, String> cookies = Cookie.parse(cookieString);
     String sessionId = cookies.get(SESSION_COOKIE_NAME);
 
     if (sessionId == null) {

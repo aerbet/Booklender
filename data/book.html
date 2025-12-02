@@ -50,21 +50,30 @@
 
 							<br><br>
 
-							<#if currentUser??>
-							<#if isAvailable>
-							<form method="POST" action="/issue">
-								<input type="hidden" name="bookId" value="${book.id}">
-								<button type="submit" class="btn">Забрать книгу</button>
-							</form>
-							<#elseif isCurrentUserHolder>
-							<form method="POST" action="/return">
-								<input type="hidden" name="bookId" value="${book.id}">
-								<button type="submit" class="btn btn-red">Вернуть книгу</button>
-							</form>
-						</#if>
-						<#else>
-						<span style="color: gray;">Для действий с книгой необходимо <a href="/login">авторизоваться</a>.</span>
-					</#if>
+				<#if currentUser??>
+				<#assign canIssue = (currentBooksCount < 2)>
+
+				<#if isAvailable>
+				<#if canIssue>
+				<form method="POST" action="/issue">
+					<input type="hidden" name="bookId" value="${book.id}">
+					<button type="submit" class="btn">Забрать книгу</button>
+				</form>
+				<#else>
+				<span style="color: #c9302c; font-weight: bold;">
+                        Превышен лимит (у вас ${currentBooksCount} из 2 книг). <br>
+												Одному сотруднику даем не более 2х книг в руки.
+                    </span>
+			</#if>
+			<#elseif isCurrentUserHolder>
+			<form method="POST" action="/return">
+				<input type="hidden" name="bookId" value="${book.id}">
+				<button type="submit" class="btn btn-red">Вернуть книгу</button>
+			</form>
+		</#if>
+		<#else>
+		<span style="color: gray;">Для действий с книгой необходимо <a href="/login">авторизоваться</a>.</span>
+	</#if>
 				</div>
 			</div>
 		</div>
