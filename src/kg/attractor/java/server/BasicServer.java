@@ -46,6 +46,66 @@ public class BasicServer {
 
     registerPost("/login", this::loginPostHandler);
     registerPost("/register", this::registerPostHandler);
+    registerPost("/issue", this::issueBookHandler);
+    registerPost("/return", this::returnBookHandler);
+  }
+
+  private void issueBookHandler(HttpExchange exchange) {
+    Employee user = getAuthenticatedUser(exchange);
+
+    if (user == null || !exchange.getRequestMethod().equals("POST")) {
+      exchange.getResponseHeaders().set("Location", "/login");
+      try {
+        exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), -1);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+      return;
+    }
+
+    String body = getRequestBody(exchange);
+    Map<String, String> parsed = Utils.parseUrlEncoded(body, "&");
+
+    String bookIdString = parsed.get("bookId");
+    int bookId = Integer.parseInt(bookIdString);
+
+    boolean success = booklender.issueBook(user.getId(), bookId);
+
+    exchange.getResponseHeaders().set("Location", "/book?id=" + bookId);
+    try {
+      exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), -1);
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+
+  private void returnBookHandler(HttpExchange exchange) {
+    Employee user = getAuthenticatedUser(exchange);
+
+    if (user == null || !exchange.getRequestMethod().equals("POST")) {
+      exchange.getResponseHeaders().set("Location", "/login");
+      try {
+        exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), -1);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+      return;
+    }
+
+    String body = getRequestBody(exchange);
+    Map<String, String> parsed = Utils.parseUrlEncoded(body, "&");
+
+    String bookIdString = parsed.get("bookId");
+    int bookId = Integer.parseInt(bookIdString);
+
+    boolean success = booklender.returnBook(user.getId(), bookId);
+
+    exchange.getResponseHeaders().set("Location", "/book?id=" + bookId);
+    try {
+      exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), -1);
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
   }
 
   private static String makeKey(String method, String route) {
@@ -297,18 +357,34 @@ public class BasicServer {
   private void freemarkerBookHandler(HttpExchange exchange) {
     try {
       String query = exchange.getRequestURI().getQuery();
+      Map<String, String> params = Utils.parseUrlEncoded(query, "&");
+      String idString = params.get("id");
       int bookId = -1;
 
-      if (query != null && query.startsWith("id=")) {
-        bookId = Integer.parseInt(query.substring(3));
+      if (idString != null) {
+        bookId = Integer.parseInt(idString);
       }
 
       Booklender lender = getBooklender();
       Book book = lender.findBookById(bookId);
 
+      if (book == null) {
+        respond404(exchange);
+        return;
+      }
+
+      Employee currentUser = getAuthenticatedUser(exchange);
+
+      Employee holder = null;
+      if (!book.getStatus().equals("Available")) {
+        String holderId = book.getStatus();
+        holder = lender.getUsersMap().get(holderId);
+      }
+
       Map<String, Object> model = new HashMap<>();
       model.put("book", book);
-      model.put("lender", lender);
+      model.put("currentUser", currentUser);
+      model.put("holder", holder);
 
       renderTemplate(exchange, "book.html", model);
     } catch (NumberFormatException e) {

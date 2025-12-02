@@ -34,7 +34,7 @@
     "id" : 1,
     "title" : "Harry Potter",
     "description" : "Magic world",
-    "status" : "Available",
+    "status" : "admin@gmail.com",
     "author" : "J.K. Rowling",
     "issueDate" : "2025-01-01T12:00:00",
     "returnDate" : "2025-01-02T12:00:00",
@@ -69,23 +69,61 @@
         "issueDate" : "2025-01-03T12:00:00",
         "returnDate" : "2025-01-04T12:00:00",
         "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ97pFcvAFG220EJKoo5_niRpgkTooVLyDz-g&s"
+      }, {
+        "id" : 1,
+        "title" : "Harry Potter",
+        "description" : "Magic world",
+        "status" : "admin@gmail.com",
+        "author" : "J.K. Rowling",
+        "issueDate" : "2025-01-01T12:00:00",
+        "returnDate" : "2025-01-02T12:00:00",
+        "image" : "https://cdn.waterstones.com/bookjackets/large/9781/4088/9781408855652.jpg"
       } ],
-      "previousBooks" : [ ]
+      "previousBooks" : [ {
+        "id" : 1,
+        "title" : "Harry Potter",
+        "description" : "Magic world",
+        "status" : "admin@gmail.com",
+        "author" : "J.K. Rowling",
+        "issueDate" : "2025-01-01T12:00:00",
+        "returnDate" : "2025-01-02T12:00:00",
+        "image" : "https://cdn.waterstones.com/bookjackets/large/9781/4088/9781408855652.jpg"
+      }, {
+        "id" : 3,
+        "title" : "Java for Beginners",
+        "description" : "Coding",
+        "status" : "Available",
+        "author" : "Herbert Schildt",
+        "issueDate" : "2025-01-05T12:00:00",
+        "returnDate" : "2025-01-06T12:00:00",
+        "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+      } ]
     },
     "user@gmail.com" : {
       "currentBooks" : [ ],
-      "previousBooks" : [
-        {
-          "id" : 3,
-          "title" : "Java for Beginners",
-          "description" : "Coding",
-          "status" : "Available",
-          "author" : "Herbert Schildt",
-          "issueDate" : "2025-01-05T12:00:00",
-          "returnDate" : "2025-01-06T12:00:00",
-          "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
-        }
-      ]
+      "previousBooks" : [ {
+        "id" : 3,
+        "title" : "Java for Beginners",
+        "description" : "Coding",
+        "status" : "Available",
+        "author" : "Herbert Schildt",
+        "issueDate" : "2025-01-05T12:00:00",
+        "returnDate" : "2025-01-06T12:00:00",
+        "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+      } ]
+    },
+    "worhd0405@gmail.com" : {
+      "currentBooks" : [ ],
+      "previousBooks" : [ {
+        "id" : 3,
+        "title" : "Java for Beginners",
+        "description" : "Coding",
+        "status" : "Available",
+        "author" : "Herbert Schildt",
+        "issueDate" : "2025-01-05T12:00:00",
+        "returnDate" : "2025-01-06T12:00:00",
+        "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+      } ]
     }
   }
 }
