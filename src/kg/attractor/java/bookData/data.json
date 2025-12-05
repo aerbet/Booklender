@@ -43,7 +43,7 @@
     "id" : 2,
     "title" : "Lord of the Rings",
     "description" : "Epic fantasy",
-    "status" : "Available",
+    "status" : "worhd0405@gmail.com",
     "author" : "J.R.R. Tolkien",
     "issueDate" : "2025-01-03T12:00:00",
     "returnDate" : "2025-01-04T12:00:00",
@@ -52,11 +52,65 @@
     "id" : 3,
     "title" : "Java for Beginners",
     "description" : "Coding",
-    "status" : "Available",
+    "status" : "worhd0405@gmail.com",
     "author" : "Herbert Schildt",
     "issueDate" : "2025-01-05T12:00:00",
     "returnDate" : "2025-01-06T12:00:00",
     "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+  }, {
+    "id" : 4,
+    "title" : "Clean Code",
+    "description" : "A Handbook of Agile Software Craftsmanship",
+    "status" : "Available",
+    "author" : "Robert C. Martin",
+    "issueDate" : "2025-01-09T12:00:00",
+    "returnDate" : "2025-01-10T12:00:00",
+    "image" : "https://m.media-amazon.com/images/I/71nj3JM-igL._AC_UF1000,1000_QL80_.jpg"
+  }, {
+    "id" : 5,
+    "title" : "The Pragmatic Programmer",
+    "description" : "From Journeyman to Master",
+    "status" : "Available",
+    "author" : "David Thomas & Andrew Hunt",
+    "issueDate" : "2025-01-11T12:00:00",
+    "returnDate" : "2025-01-12T12:00:00",
+    "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvpVYaJ2clBPnAgpBI_mfOrwMzbBfvB3M5bg&s"
+  }, {
+    "id" : 6,
+    "title" : "Design Patterns",
+    "description" : "Elements of Reusable Object-Oriented Software (GoF)",
+    "status" : "Available",
+    "author" : "Erich Gamma et al.",
+    "issueDate" : "2025-01-13T12:00:00",
+    "returnDate" : "2025-01-14T12:00:00",
+    "image" : "https://m.media-amazon.com/images/I/81IGFC6oFmL._AC_UF1000,1000_QL80_.jpg"
+  }, {
+    "id" : 7,
+    "title" : "Introduction to Algorithms",
+    "description" : "CLRS - The definitive guide to algorithms.",
+    "status" : "Available",
+    "author" : "Cormen, Leiserson, Rivest, Stein",
+    "issueDate" : "2025-01-15T12:00:00",
+    "returnDate" : "2025-01-16T12:00:00",
+    "image" : "https://m.media-amazon.com/images/I/61ZYxrQEpCL._AC_UF350,350_QL50_.jpg"
+  }, {
+    "id" : 8,
+    "title" : "Code Complete 2",
+    "description" : "Practical Handbook of Software Construction",
+    "status" : "Available",
+    "author" : "Steve McConnell",
+    "issueDate" : "2025-01-17T12:00:00",
+    "returnDate" : "2025-01-18T12:00:00",
+    "image" : "https://rukminim2.flixcart.com/image/480/640/jpr86fk0/book/2/4/6/code-complete-original-imafbxphwtyztybu.jpeg?q=90"
+  }, {
+    "id" : 9,
+    "title" : "Refactoring",
+    "description" : "Improving the Design of Existing Code",
+    "status" : "Available",
+    "author" : "Martin Fowler",
+    "issueDate" : "2025-01-19T12:00:00",
+    "returnDate" : "2025-01-20T12:00:00",
+    "image" : "https://m.media-amazon.com/images/I/71TGolfP8fL._AC_UF1000,1000_QL80_.jpg"
   } ],
   "employeeRecords" : {
     "admin@gmail.com" : {
@@ -86,7 +140,25 @@
       } ]
     },
     "worhd0405@gmail.com" : {
-      "currentBooks" : [ ],
+      "currentBooks" : [ {
+        "id" : 2,
+        "title" : "Lord of the Rings",
+        "description" : "Epic fantasy",
+        "status" : "worhd0405@gmail.com",
+        "author" : "J.R.R. Tolkien",
+        "issueDate" : "2025-01-03T12:00:00",
+        "returnDate" : "2025-01-04T12:00:00",
+        "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ97pFcvAFG220EJKoo5_niRpgkTooVLyDz-g&s"
+      }, {
+        "id" : 3,
+        "title" : "Java for Beginners",
+        "description" : "Coding",
+        "status" : "worhd0405@gmail.com",
+        "author" : "Herbert Schildt",
+        "issueDate" : "2025-01-05T12:00:00",
+        "returnDate" : "2025-01-06T12:00:00",
+        "image" : "https://m.media-amazon.com/images/I/81xQrWah1PL._UF1000,1000_QL80_.jpg"
+      } ],
       "previousBooks" : [ {
         "id" : 3,
         "title" : "Java for Beginners",

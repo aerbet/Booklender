@@ -402,17 +402,29 @@ public class BasicServer {
   }
 
   private static String makeKey(String method, String route) {
+    route = ensureStartsWithSlash(route);
     return String.format("%s %s", method.toUpperCase(), route);
   }
 
   private static String makeKey(HttpExchange exchange) {
-    var method = exchange.getRequestMethod();
-    var path = exchange.getRequestURI().getPath();
+    String method = exchange.getRequestMethod();
+    String path = exchange.getRequestURI().getPath();
 
-    var index = path.lastIndexOf(".");
-    var extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
+    if (path.endsWith("/") && path.length() > 1) {
+      path = path.substring(0, path.length() - 1);
+    }
+
+    int index = path.lastIndexOf(".");
+    String extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
 
     return makeKey(method, extOrPath);
+  }
+
+  private static String ensureStartsWithSlash(String route) {
+    if (route.startsWith(".")) {
+      return route;
+    }
+    return route.startsWith("/") ? route : "/" + route;
   }
 
   private static void setContentType(HttpExchange exchange, ContentType type) {
@@ -439,11 +451,15 @@ public class BasicServer {
   }
 
   protected final void registerGet(String route, RouteHandler handler) {
-    getRoutes().put("GET " + route, handler);
+    registerGenericHandler("GET", route, handler);
   }
 
   protected final void registerPost(String route, RouteHandler handler) {
-    getRoutes().put("POST " + route, handler);
+    registerGenericHandler("POST", route, handler);
+  }
+
+  protected final void registerGenericHandler(String method, String route, RouteHandler handler) {
+    getRoutes().put(makeKey(method, route), handler);
   }
 
   protected final void registerFileHandler(String fileExt, ContentType type) {
